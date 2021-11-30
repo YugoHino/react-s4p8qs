@@ -9,7 +9,9 @@ export default function App() {
       <p>Start editing to see some magic happen :)</p>
     </div>
   );
-  events = {};
+}
+(() => {
+  let events = {};
   console.log('ok');
   event_utils.event_kessaitype(events);
-}
+})();
