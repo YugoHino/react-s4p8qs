@@ -59,10 +59,10 @@ export function createDoc(record, kessaiSha) {
 
   const table1 = new docx.Table({
     margins: {
-      top: '10',
-      bottom: '10',
-      left: '10',
-      right: '10',
+      top: 10,
+      bottom: 10,
+      left: 10,
+      right: 10,
     },
     rows: [
       new docx.TableRow({
@@ -1135,32 +1135,32 @@ export function createDoc(record, kessaiSha) {
         {
           name: 'Normal',
           run: {
-            size: '24',
+            size: 24,
             font: 'ＭＳ 明朝',
           },
           paragraph: {
             spacing: {
-              before: '10',
+              before: 10,
             },
             indent: {
-              left: '50',
-              right: '50',
+              left: 50,
+              right: 50,
             },
           },
         },
         {
           name: 'Figure1',
           run: {
-            size: '18',
+            size: 18,
             font: 'ＭＳ 明朝',
           },
           paragraph: {
             spacing: {
-              before: '10',
+              before: 10,
             },
             indent: {
-              left: '50',
-              right: '50',
+              left: 50,
+              right: 50,
             },
           },
         },
