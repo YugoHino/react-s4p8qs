@@ -1173,25 +1173,25 @@ export function createDoc(record, kessaiSha) {
             borders: {
               pageBorderLeft: {
                 style: docx.BorderStyle.SINGLE,
-                size: 120,
+                size: 15,
                 color: '000000',
                 space: 0,
               },
               pageBorderRight: {
                 style: docx.BorderStyle.SINGLE,
-                size: 120,
+                size: 15,
                 color: '000000',
                 space: 0,
               },
               pageBorderTop: {
                 style: docx.BorderStyle.SINGLE,
-                size: 120,
+                size: 15,
                 color: 'auto',
                 space: 0,
               },
               pageBorderBottom: {
                 style: docx.BorderStyle.SINGLE,
-                size: 120,
+                size: 15,
                 color: 'auto',
                 space: 0,
               },
