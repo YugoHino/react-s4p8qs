@@ -1,6 +1,6 @@
 import * as docx from 'docx';
 
-export function createDoc(record, kessaiSha,footertext) {
+export function createDoc(record, kessaiSha, footertext) {
   let headertext = '';
   switch (kessaiSha) {
     case 'gcho':
@@ -54,6 +54,10 @@ export function createDoc(record, kessaiSha,footertext) {
   const file_mitsumori = record.file_mitsumori.value;
   const file_torihikisaki_sentei = record.file_torihikisaki_sentei.value;
   const file_sonota = record.file_sonota.value;
+
+  //
+  // 共通表の作成
+  //
 
   const figure_common = new docx.Table({
     margins: {
@@ -417,7 +421,6 @@ export function createDoc(record, kessaiSha,footertext) {
       }),
     ],
   });
-
   figure_common.root.push(row_yosan_riyu);
 
   let kessai_summary_list = kessai_summary.split('\n');
@@ -457,10 +460,10 @@ export function createDoc(record, kessaiSha,footertext) {
   // 取引テーブルの作成
   //
 
-  // 
+  //
   // 取引テーブルのヘッダ作成
-  // 
-  function table_torihiki_cell(c_size,c_text){
+  //
+  function table_torihiki_cell(c_size, c_text) {
     const table_cell = new docx.TableCell({
       width: {
         size: c_size,
@@ -475,24 +478,24 @@ export function createDoc(record, kessaiSha,footertext) {
           alignment: docx.AlignmentType.CENTER,
         }),
       ],
-    }),
-    return table_cell
+    });
+    return table_cell;
   }
 
   const table_torihiki = new docx.Table({
     rows: [
       new docx.TableRow({
         children: [
-          table_torihiki_cell(40,'取引先'),
-          table_torihiki_cell(60,'納入予定日'),
+          table_torihiki_cell(40, '取引先'),
+          table_torihiki_cell(60, '納入予定日'),
         ],
       }),
     ],
   });
 
-  // 
+  //
   // 取引テーブルの明細作成
-  //  
+  //
   const groupBy = (array) => {
     return array.reduce((result, currentValue) => {
       result[currentValue.value.hiyo_torihikisaki.value] =
@@ -522,7 +525,7 @@ export function createDoc(record, kessaiSha,footertext) {
       torihiki_nouki.push(nengappi);
     });
 
-    function tableRow_torihikisaki_cell(c_text){
+    function tableRow_torihikisaki_cell(c_text) {
       const table_cell = new docx.TableCell({
         columnSpan: 1,
         children: [
@@ -531,8 +534,8 @@ export function createDoc(record, kessaiSha,footertext) {
             alignment: docx.AlignmentType.LEFT,
           }),
         ],
-      }),
-      return table_cell
+      });
+      return table_cell;
     }
 
     const tableRow_torihikisaki = new docx.TableRow({
@@ -548,9 +551,9 @@ export function createDoc(record, kessaiSha,footertext) {
   // 費用テーブルの作成
   //
 
-  // 
+  //
   // 費用テーブルのヘッダ作成
-  // 
+  //
   const table_hiyo = new docx.Table({
     rows: [
       new docx.TableRow({
@@ -844,10 +847,10 @@ export function createDoc(record, kessaiSha,footertext) {
     ],
   });
 
-  // 
+  //
   // 費用テーブルの明細作成
-  // 
-  function tableRow_hiyo_cell(p_text,p_alignment){
+  //
+  function tableRow_hiyo_cell(p_text, p_alignment) {
     const table_cell = new docx.TableCell({
       columnSpan: 1,
       children: [
@@ -857,8 +860,8 @@ export function createDoc(record, kessaiSha,footertext) {
           alignment: p_alignment,
         }),
       ],
-    }),
-    return table_cell
+    });
+    return table_cell;
   }
 
   // 明細行作成
@@ -891,16 +894,16 @@ export function createDoc(record, kessaiSha,footertext) {
     const tableRow_hiyo = new docx.TableRow({
       cantSplit: true,
       children: [
-        tableRow_hiyo_cell(hiyo_naiyo,docx.AlignmentType.LEFT),
-        tableRow_hiyo_cell(hiyo_kei,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo01,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo02,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo03_0,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo03,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo04,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo05,docx.AlignmentType.RIGHT),
-        tableRow_hiyo_cell(hiyo_torihikisaki,docx.AlignmentType.LEFT),
-        tableRow_hiyo_cell(hiyo_biko,docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_naiyo, docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_kei, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo01, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo02, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo03_0, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo03, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo04, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo05, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo_torihikisaki, docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_biko, docx.AlignmentType.LEFT),
       ],
     });
     table_hiyo.root.push(tableRow_hiyo);
@@ -910,16 +913,16 @@ export function createDoc(record, kessaiSha,footertext) {
   const tableRow_hiyo_kei = new docx.TableRow({
     cantSplit: true,
     children: [
-      tableRow_hiyo_cell('合計',docx.AlignmentType.LEFT),
-      tableRow_hiyo_cell(hiyo_total,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_kaihatsu_ichiji,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_kaihatsu_uneihi,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_uneihi_ty,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_uneihi_ny,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_uneihi_n2y,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell(it_uneihi_n3y,docx.AlignmentType.RIGHT),
-      tableRow_hiyo_cell('',docx.AlignmentType.LEFT),
-      tableRow_hiyo_cell('',docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell('合計', docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell(hiyo_total, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_kaihatsu_ichiji, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_kaihatsu_uneihi, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_ty, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_ny, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_n2y, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_n3y, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell('', docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell('', docx.AlignmentType.LEFT),
     ],
   });
 
@@ -964,14 +967,11 @@ export function createDoc(record, kessaiSha,footertext) {
     );
   }
 
-
-
-  // 
+  //
   // 出力するコンテンツをパターンから選択
-  // 
-  function document_contents(){
-
-    const document_content =[
+  //
+  function document_contents() {
+    const document_content = [
       figure_common,
       new docx.Paragraph({ children: paragraph_kessai_summary }),
       new docx.Paragraph({ text: '' }),
@@ -1007,15 +1007,15 @@ export function createDoc(record, kessaiSha,footertext) {
       new docx.Paragraph({ text: '６．添付資料' }),
       paragraph_files,
       new docx.Paragraph({ text: '' }),
-      new docx.Paragraph({ text: '以上' })
-    ]
+      new docx.Paragraph({ text: '以上' }),
+    ];
 
-    return document_content
+    return document_content;
   }
 
-  // 
+  //
   //本体作成
-  // 
+  //
   const doc = new docx.Document({
     styles: {
       paragraphStyles: [
@@ -1135,7 +1135,7 @@ export function createDoc(record, kessaiSha,footertext) {
           }),
         },
 
-        children: document_contents()
+        children: document_contents(),
       },
     ],
   });

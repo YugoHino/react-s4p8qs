@@ -24,6 +24,7 @@ export default function App() {
         value:
           '備考ですあああああああああああああああああああああああああああああああああああああああああ',
       },
+      kessai_type: { value: '1.IT関係費' },
       hiyo_total: { value: 1470000 },
       it_kaihatsu_ichiji: { value: 10000 },
       it_kaihatsu_uneihi: { value: 20000 },
