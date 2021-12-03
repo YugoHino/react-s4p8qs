@@ -57,7 +57,7 @@ export function createDoc(record, kessaiSha) {
   const file_torihikisaki_sentei = record.file_torihikisaki_sentei.value;
   const file_sonota = record.file_sonota.value;
 
-  const table1 = new docx.Table({
+  const figure_common = new docx.Table({
     margins: {
       top: 10,
       bottom: 10,
@@ -394,7 +394,7 @@ export function createDoc(record, kessaiSha) {
         }),
       ],
     });
-    table1.root.push(tableRow_yosan_sochi);
+    figure_common.root.push(tableRow_yosan_sochi);
   });
 
   const row_yosan_riyu = new docx.TableRow({
@@ -420,7 +420,7 @@ export function createDoc(record, kessaiSha) {
     ],
   });
 
-  table1.root.push(row_yosan_riyu);
+  figure_common.root.push(row_yosan_riyu);
 
   let kessai_summary_list = kessai_summary.split('\n');
   let paragraph_kessai_summary = [];
@@ -456,48 +456,45 @@ export function createDoc(record, kessaiSha) {
   }
 
   //
-  //取引テーブルの作成
+  // 取引テーブルの作成
   //
+
+  // 
+  // 取引テーブルのヘッダ作成
+  // 
+  function table_torihiki_cell(c_size,c_text){
+    const table_cell = new docx.TableCell({
+      width: {
+        size: c_size,
+        type: docx.WidthType.PERCENTAGE,
+      },
+      shading: {
+        fill: 'F5F5F5',
+      },
+      children: [
+        new docx.Paragraph({
+          text: c_text,
+          alignment: docx.AlignmentType.CENTER,
+        }),
+      ],
+    }),
+    return table_cell
+  }
 
   const table_torihiki = new docx.Table({
     rows: [
       new docx.TableRow({
         children: [
-          new docx.TableCell({
-            width: {
-              size: 40,
-              type: docx.WidthType.PERCENTAGE,
-            },
-            shading: {
-              fill: 'F5F5F5',
-            },
-            children: [
-              new docx.Paragraph({
-                text: '取引先',
-                alignment: docx.AlignmentType.CENTER,
-              }),
-            ],
-          }),
-          new docx.TableCell({
-            width: {
-              size: 60,
-              type: docx.WidthType.PERCENTAGE,
-            },
-            shading: {
-              fill: 'F5F5F5',
-            },
-            children: [
-              new docx.Paragraph({
-                text: '納入予定日',
-                alignment: docx.AlignmentType.CENTER,
-              }),
-            ],
-          }),
+          table_torihiki_cell(40,'取引先'),
+          table_torihiki_cell(60,'納入予定日'),
         ],
       }),
     ],
   });
 
+  // 
+  // 取引テーブルの明細作成
+  //  
   const groupBy = (array) => {
     return array.reduce((result, currentValue) => {
       result[currentValue.value.hiyo_torihikisaki.value] =
@@ -515,7 +512,6 @@ export function createDoc(record, kessaiSha) {
   };
 
   const torihikisaki_table = groupBy(hiyo_table);
-
   for (let torihikisaki_table_row in torihikisaki_table) {
     const torihiki_saki = torihikisaki_table_row;
     let torihiki_nouki = [];
@@ -527,26 +523,24 @@ export function createDoc(record, kessaiSha) {
       let nengappi = nounyunen + '年' + nounyutsuki + '月' + nounyubi + '日';
       torihiki_nouki.push(nengappi);
     });
+
+    function tableRow_torihikisaki_cell(c_text){
+      const table_cell = new docx.TableCell({
+        columnSpan: 1,
+        children: [
+          new docx.Paragraph({
+            text: c_text,
+            alignment: docx.AlignmentType.LEFT,
+          }),
+        ],
+      }),
+      return table_cell
+    }
+
     const tableRow_torihikisaki = new docx.TableRow({
       children: [
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: torihiki_saki,
-              alignment: docx.AlignmentType.LEFT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: torihiki_nouki.join('、'),
-              alignment: docx.AlignmentType.LEFT,
-            }),
-          ],
-        }),
+        tableRow_torihikisaki_cell(torihiki_saki),
+        tableRow_torihikisaki_cell(torihiki_nouki.join('、')),
       ],
     });
     table_torihiki.root.push(tableRow_torihikisaki);
@@ -555,6 +549,10 @@ export function createDoc(record, kessaiSha) {
   //
   // 費用テーブルの作成
   //
+
+  // 
+  // 費用テーブルのヘッダ作成
+  // 
   const table_hiyo = new docx.Table({
     rows: [
       new docx.TableRow({
@@ -848,6 +846,24 @@ export function createDoc(record, kessaiSha) {
     ],
   });
 
+  // 
+  // 費用テーブルの明細作成
+  // 
+  function tableRow_hiyo_cell(p_text,p_alignment){
+    const table_cell = new docx.TableCell({
+      columnSpan: 1,
+      children: [
+        new docx.Paragraph({
+          text: p_text,
+          style: 'Figure1',
+          alignment: p_alignment,
+        }),
+      ],
+    }),
+    return table_cell
+  }
+
+  // 明細行作成
   hiyo_table.forEach((hiyo_table_row) => {
     const hiyo01 = String(
       Math.round(hiyo_table_row.value.hiyo01.value / 1000)
@@ -873,217 +889,39 @@ export function createDoc(record, kessaiSha) {
     const hiyo_biko = hiyo_table_row.value.hiyo_biko.value;
     const hiyo_naiyo = hiyo_table_row.value.hiyo_naiyo.value;
     const hiyo_torihikisaki = hiyo_table_row.value.hiyo_torihikisaki.value;
+
     const tableRow_hiyo = new docx.TableRow({
       cantSplit: true,
       children: [
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo_naiyo,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.LEFT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo_kei,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo01,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo02,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo03_0,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo03,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo04,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo05,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.RIGHT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo_torihikisaki,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.LEFT,
-            }),
-          ],
-        }),
-        new docx.TableCell({
-          columnSpan: 1,
-          children: [
-            new docx.Paragraph({
-              text: hiyo_biko,
-              style: 'Figure1',
-              alignment: docx.AlignmentType.LEFT,
-            }),
-          ],
-        }),
+        tableRow_hiyo_cell(hiyo_naiyo,docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_kei,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo01,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo02,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo03_0,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo03,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo04,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo05,docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo_torihikisaki,docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_biko,docx.AlignmentType.LEFT),
       ],
     });
     table_hiyo.root.push(tableRow_hiyo);
   });
 
+  // 合計行作成
   const tableRow_hiyo_kei = new docx.TableRow({
     cantSplit: true,
     children: [
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: '合計',
-            style: 'Figure1',
-            alignment: docx.AlignmentType.LEFT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: hiyo_total,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_kaihatsu_ichiji,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_kaihatsu_uneihi,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_uneihi_ty,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_uneihi_ny,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_uneihi_n2y,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: it_uneihi_n3y,
-            style: 'Figure1',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: '',
-            style: 'Figure1',
-            alignment: docx.AlignmentType.LEFT,
-          }),
-        ],
-      }),
-      new docx.TableCell({
-        columnSpan: 1,
-        children: [
-          new docx.Paragraph({
-            text: '',
-            style: 'Figure1',
-            alignment: docx.AlignmentType.LEFT,
-          }),
-        ],
-      }),
+      tableRow_hiyo_cell('合計',docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell(hiyo_total,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_kaihatsu_ichiji,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_kaihatsu_uneihi,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_ty,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_ny,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_n2y,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell(it_uneihi_n3y,docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell('',docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell('',docx.AlignmentType.LEFT),
     ],
   });
 
@@ -1249,8 +1087,7 @@ export function createDoc(record, kessaiSha) {
         },
 
         children: [
-          table1,
-          // new docx.Paragraph({text:""}),
+          figure_common,
           new docx.Paragraph({ children: paragraph_kessai_summary }),
           new docx.Paragraph({ text: '' }),
           new docx.Paragraph({
