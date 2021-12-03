@@ -1,8 +1,6 @@
 import * as docx from 'docx';
 
-export function createDoc(record, kessaiSha) {
-  const footertext = 'テ　ス　ト　株　式　会　社　　　　　　　　　　　　　';
-
+export function createDoc(record, kessaiSha,footertext) {
   let headertext = '';
   switch (kessaiSha) {
     case 'gcho':
@@ -966,7 +964,58 @@ export function createDoc(record, kessaiSha) {
     );
   }
 
+
+
+  // 
+  // 出力するコンテンツをパターンから選択
+  // 
+  function document_contents(){
+
+    const document_content =[
+      figure_common,
+      new docx.Paragraph({ children: paragraph_kessai_summary }),
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({
+        text: '記',
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({ text: '１．案件' }),
+      new docx.Paragraph({ text: '　PJ No: ' + project_no }),
+      new docx.Paragraph({ text: '　名称 : ' + project_name }),
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({
+        text: '２．背景・経緯',
+        children: paragraph_haikei,
+      }),
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({
+        text: '３．実施内容',
+        children: paragraph_jisshi_naiyo,
+      }),
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({ text: '４．発注先' }),
+      table_torihiki,
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({ text: '５．費用' }),
+      new docx.Paragraph({
+        text: '（単位：千円）',
+        alignment: docx.AlignmentType.RIGHT,
+      }),
+      table_hiyo,
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({ text: '６．添付資料' }),
+      paragraph_files,
+      new docx.Paragraph({ text: '' }),
+      new docx.Paragraph({ text: '以上' })
+    ]
+
+    return document_content
+  }
+
+  // 
   //本体作成
+  // 
   const doc = new docx.Document({
     styles: {
       paragraphStyles: [
@@ -1086,44 +1135,7 @@ export function createDoc(record, kessaiSha) {
           }),
         },
 
-        children: [
-          figure_common,
-          new docx.Paragraph({ children: paragraph_kessai_summary }),
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({
-            text: '記',
-            alignment: docx.AlignmentType.CENTER,
-          }),
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({ text: '１．案件' }),
-          new docx.Paragraph({ text: '　PJ No: ' + project_no }),
-          new docx.Paragraph({ text: '　名称 : ' + project_name }),
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({
-            text: '２．背景・経緯',
-            children: paragraph_haikei,
-          }),
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({
-            text: '３．実施内容',
-            children: paragraph_jisshi_naiyo,
-          }),
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({ text: '４．発注先' }),
-          table_torihiki,
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({ text: '５．費用' }),
-          new docx.Paragraph({
-            text: '（単位：千円）',
-            alignment: docx.AlignmentType.RIGHT,
-          }),
-          table_hiyo,
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({ text: '６．添付資料' }),
-          paragraph_files,
-          new docx.Paragraph({ text: '' }),
-          new docx.Paragraph({ text: '以上' }),
-        ],
+        children: document_contents()
       },
     ],
   });
