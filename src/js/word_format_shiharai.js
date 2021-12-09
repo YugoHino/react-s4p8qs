@@ -1,4 +1,6 @@
-export function getItems(record) {
+import * as docx from 'docx';
+
+export function getFigureShiharai(record) {
   const it_kaihatsu_ichiji = String(
     Math.round(record.it_kaihatsu_ichiji.value / 1000)
   ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
@@ -17,6 +19,10 @@ export function getItems(record) {
   const it_uneihi_n3y = String(
     Math.round(record.it_uneihi_n3y.value / 1000)
   ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const hiyo_total = String(Math.round(record.hiyo_total.value / 1000)).replace(
+    /(\d)(?=(\d{3})+(?!\d))/g,
+    '$1,'
+  );
   const kessai_summary = record.kessai_summary.value;
   const project_no = record.project_no.value;
   const project_name = record.project_name.value;
@@ -571,6 +577,43 @@ export function getItems(record) {
       })
     );
   }
-
-  return;
+  const figure_shiharai = [
+    new docx.Paragraph({ children: paragraph_kessai_summary }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '記',
+      alignment: docx.AlignmentType.CENTER,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '１．案件' }),
+    new docx.Paragraph({ text: '　PJ No: ' + project_no }),
+    new docx.Paragraph({ text: '　名称 : ' + project_name }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '２．背景・経緯',
+      children: paragraph_haikei,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '３．実施内容',
+      children: paragraph_jisshi_naiyo,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '４．発注先' }),
+    table_torihiki,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '５．費用' }),
+    new docx.Paragraph({
+      text: '（単位：千円）',
+      alignment: docx.AlignmentType.RIGHT,
+    }),
+    table_hiyo,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '６．添付資料' }),
+    paragraph_files,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '以上' }),
+  ];
+  // console.log(paragraph_kessai_summary);
+  return figure_shiharai;
 }
