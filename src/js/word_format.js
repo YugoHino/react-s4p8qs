@@ -21,9 +21,9 @@ export function createDoc(record, kessaiSha, footertext) {
   //
   function document_contents() {
     let document_content = [word_format_common.getFigureCommon(record)];
-    console.log(word_format_shiharai.getFigureShiharai(record));
-    document_content.concat(word_format_shiharai.getFigureShiharai(record));
-    // console.log(document_content[1]);
+    document_content = document_content.concat(
+      word_format_shiharai.getFigureShiharai(record)
+    );
     return document_content;
   }
 

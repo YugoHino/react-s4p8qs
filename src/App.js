@@ -25,11 +25,11 @@ export default function App() {
           '備考ですあああああああああああああああああああああああああああああああああああああああああ',
       },
       // kessai_type: { value: '1.IT関係費' },
-      kessai_type: { value: '2.業務推進費' },
+      kessai_type: { value: '1.業務推進費' },
       hiyo_total: { value: 1470000 },
       it_kaihatsu_ichiji: { value: 10000 },
       it_kaihatsu_uneihi: { value: 20000 },
-      it_uneihi_ty: { value: 20000 },
+      it_uneihi_ty: { value: 200000 },
       it_uneihi_ny: { value: 20000 },
       it_uneihi_n2y: { value: 30000 },
       it_uneihi_n3y: { value: 40000 },
@@ -145,7 +145,7 @@ export default function App() {
           {
             value: {
               hiyo01: {
-                value: '100',
+                value: '100000',
               },
               hiyo02: {
                 value: '200',
