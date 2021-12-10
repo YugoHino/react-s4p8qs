@@ -631,6 +631,7 @@ function getGyomusuishinhiTable(record) {
   //
   function tableRow_hiyo_cell(p_text, p_alignment) {
     const table_cell = new docx.TableCell({
+      columnSpan: 1,
       children: [
         new docx.Paragraph({
           text: p_text,
