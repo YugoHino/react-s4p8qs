@@ -499,8 +499,289 @@ function getItkankeihiTable(record) {
   return [table_hiyo, table_torihiki];
 }
 
-function getGyomusuishinHiyoTable() {
-  return;
+function getGyomusuishinhiTable(record) {
+  //
+  // 業務推進費用テーブルの作成
+  //
+
+  //
+  // 費用テーブルのヘッダ作成
+  //
+  const gyomusuishin_hiyo_table = record.gyomusuishin_hiyo_table.value;
+  const it_kaihatsu_ichiji = String(
+    Math.round(record.it_kaihatsu_ichiji.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const it_kaihatsu_uneihi = String(
+    Math.round(record.it_kaihatsu_uneihi.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const it_uneihi_ty = String(
+    Math.round(record.it_uneihi_ty.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const it_uneihi_ny = String(
+    Math.round(record.it_uneihi_ny.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const it_uneihi_n2y = String(
+    Math.round(record.it_uneihi_n2y.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const it_uneihi_n3y = String(
+    Math.round(record.it_uneihi_n3y.value / 1000)
+  ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const hiyo_total = String(Math.round(record.hiyo_total.value / 1000)).replace(
+    /(\d)(?=(\d{3})+(?!\d))/g,
+    '$1,'
+  );
+
+  const table_hiyo = new docx.Table({
+    rows: [
+      new docx.TableRow({
+        cantSplit: true,
+        children: [
+          new docx.TableCell({
+            width: {
+              size: 25,
+              type: docx.WidthType.PERCENTAGE,
+            },
+            shading: {
+              fill: 'F5F5F5',
+            },
+            verticalAlign: docx.VerticalAlign.CENTER,
+            children: [
+              new docx.Paragraph({
+                text: '内容',
+                style: 'Figure1',
+                alignment: docx.AlignmentType.CENTER,
+              }),
+            ],
+          }),
+          new docx.TableCell({
+            width: {
+              size: 15,
+              type: docx.WidthType.PERCENTAGE,
+            },
+            shading: {
+              fill: 'F5F5F5',
+            },
+            verticalAlign: docx.VerticalAlign.CENTER,
+            children: [
+              new docx.Paragraph({
+                text: '勘定科目',
+                style: 'Figure1',
+                alignment: docx.AlignmentType.CENTER,
+              }),
+            ],
+          }),
+          new docx.TableCell({
+            width: {
+              size: 10,
+              type: docx.WidthType.PERCENTAGE,
+            },
+            shading: {
+              fill: 'F5F5F5',
+            },
+            verticalAlign: docx.VerticalAlign.CENTER,
+            children: [
+              new docx.Paragraph({
+                text: '金額',
+                style: 'Figure1',
+                alignment: docx.AlignmentType.CENTER,
+              }),
+            ],
+          }),
+          new docx.TableCell({
+            width: {
+              size: 20,
+              type: docx.WidthType.PERCENTAGE,
+            },
+            shading: {
+              fill: 'F5F5F5',
+            },
+            verticalAlign: docx.VerticalAlign.CENTER,
+            children: [
+              new docx.Paragraph({
+                text: '取引先',
+                style: 'Figure1',
+                alignment: docx.AlignmentType.CENTER,
+              }),
+            ],
+          }),
+          new docx.TableCell({
+            width: {
+              size: 30,
+              type: docx.WidthType.PERCENTAGE,
+            },
+            shading: {
+              fill: 'F5F5F5',
+            },
+            verticalAlign: docx.VerticalAlign.CENTER,
+            children: [
+              new docx.Paragraph({
+                text: '備考',
+                style: 'Figure1',
+                alignment: docx.AlignmentType.CENTER,
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+
+  //
+  // 費用テーブルの明細作成
+  //
+  function tableRow_hiyo_cell(p_text, p_alignment) {
+    const table_cell = new docx.TableCell({
+      children: [
+        new docx.Paragraph({
+          text: p_text,
+          style: 'Figure1',
+          alignment: p_alignment,
+        }),
+      ],
+    });
+    return table_cell;
+  }
+
+  // 明細行作成
+  gyomusuishin_hiyo_table.forEach((hiyo_table_row) => {
+    const hiyo_kei = String(
+      Math.round(hiyo_table_row.value.gyomusuishin_hiyo_kei.value / 1000)
+    ).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    const hiyo_kamoku = hiyo_table_row.value.gyomusuishin_hiyo_kamoku.value;
+    const hiyo_biko = hiyo_table_row.value.gyomusuishin_hiyo_biko.value;
+    const hiyo_naiyo = hiyo_table_row.value.gyomusuishin_hiyo_naiyo.value;
+    const hiyo_torihikisaki =
+      hiyo_table_row.value.gyomusuishin_hiyo_torihikisaki.value;
+
+    const tableRow_hiyo = new docx.TableRow({
+      cantSplit: true,
+      children: [
+        tableRow_hiyo_cell(hiyo_naiyo, docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_kamoku, docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_kei, docx.AlignmentType.RIGHT),
+        tableRow_hiyo_cell(hiyo_torihikisaki, docx.AlignmentType.LEFT),
+        tableRow_hiyo_cell(hiyo_biko, docx.AlignmentType.LEFT),
+      ],
+    });
+    table_hiyo.root.push(tableRow_hiyo);
+  });
+
+  // 合計行作成
+  const tableRow_hiyo_kei = new docx.TableRow({
+    cantSplit: true,
+    children: [
+      new docx.TableCell({
+        columnSpan: 2,
+        children: [
+          new docx.Paragraph({
+            text: '合計',
+            style: 'Figure1',
+            alignment: docx.AlignmentType.LEFT,
+          }),
+        ],
+      }),
+      tableRow_hiyo_cell(hiyo_total, docx.AlignmentType.RIGHT),
+      tableRow_hiyo_cell('', docx.AlignmentType.LEFT),
+      tableRow_hiyo_cell('', docx.AlignmentType.LEFT),
+    ],
+  });
+  table_hiyo.root.push(tableRow_hiyo_kei);
+
+  //
+  // 取引テーブルの作成
+  //
+
+  //
+  // 取引テーブルのヘッダ作成
+  //
+  function table_torihiki_cell(c_size, c_text) {
+    const table_cell = new docx.TableCell({
+      width: {
+        size: c_size,
+        type: docx.WidthType.PERCENTAGE,
+      },
+      shading: {
+        fill: 'F5F5F5',
+      },
+      children: [
+        new docx.Paragraph({
+          text: c_text,
+          alignment: docx.AlignmentType.CENTER,
+        }),
+      ],
+    });
+    return table_cell;
+  }
+
+  const table_torihiki = new docx.Table({
+    rows: [
+      new docx.TableRow({
+        children: [
+          table_torihiki_cell(40, '取引先'),
+          table_torihiki_cell(60, '納入予定日'),
+        ],
+      }),
+    ],
+  });
+
+  //
+  // 取引テーブルの明細作成
+  //
+  const groupBy = (array) => {
+    return array.reduce((result, currentValue) => {
+      result[currentValue.value.gyomusuishin_hiyo_torihikisaki.value] =
+        result[currentValue.value.gyomusuishin_hiyo_torihikisaki.value] || [];
+      var check = result[
+        currentValue.value.gyomusuishin_hiyo_torihikisaki.value
+      ].find(
+        (v) =>
+          v.nounyuyotei ===
+          currentValue.value.gyomusuishin_hiyo_nounyuyotei.value
+      );
+      if (!check) {
+        result[currentValue.value.gyomusuishin_hiyo_torihikisaki.value].push({
+          nounyuyotei: currentValue.value.gyomusuishin_hiyo_nounyuyotei.value,
+        });
+      }
+      return result;
+    }, {});
+  };
+
+  const torihikisaki_table = groupBy(gyomusuishin_hiyo_table);
+  for (let torihikisaki_table_row in torihikisaki_table) {
+    const torihiki_saki = torihikisaki_table_row;
+    let torihiki_nouki = [];
+    torihikisaki_table[torihikisaki_table_row].forEach((v) => {
+      let nounyu = new Date(v.nounyuyotei);
+      let nounyunen = nounyu.getFullYear();
+      let nounyutsuki = nounyu.getMonth() + 1;
+      let nounyubi = nounyu.getDate();
+      let nengappi = nounyunen + '年' + nounyutsuki + '月' + nounyubi + '日';
+      torihiki_nouki.push(nengappi);
+    });
+
+    function tableRow_torihikisaki_cell(c_text) {
+      const table_cell = new docx.TableCell({
+        columnSpan: 1,
+        children: [
+          new docx.Paragraph({
+            text: c_text,
+            alignment: docx.AlignmentType.LEFT,
+          }),
+        ],
+      });
+      return table_cell;
+    }
+
+    const tableRow_torihikisaki = new docx.TableRow({
+      children: [
+        tableRow_torihikisaki_cell(torihiki_saki),
+        tableRow_torihikisaki_cell(torihiki_nouki.join('、')),
+      ],
+    });
+    table_torihiki.root.push(tableRow_torihikisaki);
+  }
+  return [table_hiyo, table_torihiki];
 }
 
 export function getFigureShiharai(record) {
@@ -587,54 +868,58 @@ export function getFigureShiharai(record) {
       })
     );
   }
-  let figure_shiharai = [];
+
+  let table_hiyo;
+  let table_torihiki;
   switch (kessai_type[0]) {
     case '1':
       const it_kankeihi_table = getItkankeihiTable(record);
-      const table_hiyo = it_kankeihi_table[0];
-      const table_torihiki = it_kankeihi_table[1];
-
-      figure_shiharai = [
-        new docx.Paragraph({ children: paragraph_kessai_summary }),
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({
-          text: '記',
-          alignment: docx.AlignmentType.CENTER,
-        }),
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({ text: '１．案件' }),
-        new docx.Paragraph({ text: '　PJ No: ' + project_no }),
-        new docx.Paragraph({ text: '　名称 : ' + project_name }),
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({
-          text: '２．背景・経緯',
-          children: paragraph_haikei,
-        }),
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({
-          text: '３．実施内容',
-          children: paragraph_jisshi_naiyo,
-        }),
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({ text: '４．発注先' }),
-        table_torihiki,
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({ text: '５．費用' }),
-        new docx.Paragraph({
-          text: '（単位：千円）',
-          alignment: docx.AlignmentType.RIGHT,
-        }),
-        table_hiyo,
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({ text: '６．添付資料' }),
-        paragraph_files,
-        new docx.Paragraph({ text: '' }),
-        new docx.Paragraph({ text: '以上' }),
-      ];
+      table_hiyo = it_kankeihi_table[0];
+      table_torihiki = it_kankeihi_table[1];
       break;
     case '2':
+      const gyomusuishinhi_table = getGyomusuishinhiTable(record);
+      table_hiyo = gyomusuishinhi_table[0];
+      table_torihiki = gyomusuishinhi_table[1];
       break;
   }
+  const figure_shiharai = [
+    new docx.Paragraph({ children: paragraph_kessai_summary }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '記',
+      alignment: docx.AlignmentType.CENTER,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '１．案件' }),
+    new docx.Paragraph({ text: '　PJ No: ' + project_no }),
+    new docx.Paragraph({ text: '　名称 : ' + project_name }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '２．背景・経緯',
+      children: paragraph_haikei,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({
+      text: '３．実施内容',
+      children: paragraph_jisshi_naiyo,
+    }),
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '４．発注先' }),
+    table_torihiki,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '５．費用' }),
+    new docx.Paragraph({
+      text: '（単位：千円）',
+      alignment: docx.AlignmentType.RIGHT,
+    }),
+    table_hiyo,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '６．添付資料' }),
+    paragraph_files,
+    new docx.Paragraph({ text: '' }),
+    new docx.Paragraph({ text: '以上' }),
+  ];
 
   return figure_shiharai;
 }

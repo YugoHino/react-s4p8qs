@@ -25,7 +25,7 @@ export default function App() {
           '備考ですあああああああああああああああああああああああああああああああああああああああああ',
       },
       // kessai_type: { value: '1.IT関係費' },
-      kessai_type: { value: '1.業務推進費' },
+      kessai_type: { value: '2.業務推進費' },
       hiyo_total: { value: 1470000 },
       it_kaihatsu_ichiji: { value: 10000 },
       it_kaihatsu_uneihi: { value: 20000 },
@@ -117,6 +117,12 @@ export default function App() {
               gyomusuishin_hiyo_torihikisaki: {
                 value: 'test',
               },
+              gyomusuishin_hiyo_kamoku: {
+                value: 'IT直接費',
+              },
+              gyomusuishin_hiyo_biko: {
+                value: 'コメントはこちらにはいってきます',
+              },
             },
           },
           {
@@ -135,6 +141,12 @@ export default function App() {
               },
               gyomusuishin_hiyo_torihikisaki: {
                 value: 'test2',
+              },
+              gyomusuishin_hiyo_kamoku: {
+                value: 'IT直接費２',
+              },
+              gyomusuishin_hiyo_biko: {
+                value: 'コメントはこちらにはいってきます２',
               },
             },
           },
